@@ -1,15 +1,15 @@
-const express = require("express");
-const cors = require("cors");
-const jwt = require("jsonwebtoken");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const jwt = require('jsonwebtoken')
+const express = require('express');
+const cors = require('cors');
+const app = express();
+require('dotenv').config();
+const port = process.env.PORT || 5000;
 const ObjectId = require('mongodb').ObjectId;
 
-require("dotenv").config();
-
-const app = express();
-const port = process.env.PORT || 5000;
 
 // middle wares
+
 app.use(cors());
 app.use(express.json());
 
@@ -18,9 +18,7 @@ function verifyJWT(req, res, next) {
   if (!authHeader) {
     return res.status(401).send("unauthorized access");
   }
-
   const token = authHeader.split(" ")[1];
-
   jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
     if (err) {
       return res.status(403).send({ message: "forbidden access" });
@@ -32,29 +30,20 @@ function verifyJWT(req, res, next) {
 
 const run = async () => {
   try {
-    const uri = `mongodb+srv://carResale:D1014xz9CyKe7Kv3@cluster0.lfqifm1.mongodb.net/?retryWrites=true&w=majority`;
+    const uri = "mongodb+srv://bikeresale:qxYHNq5rsBhyUGoZ@cluster0.0vz4bby.mongodb.net/?retryWrites=true&w=majority";
     const client = new MongoClient(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       serverApi: ServerApiVersion.v1,
     });
 
-    const carsCollection = client.db("carResale").collection("allCars");
+const carsCollection = client.db("resaleCar").collection("allCars");
 
-    // updateMany(
-    //   { currentDate: true },
-    //   {
-    //     $set: {
-    //       curentDate: new Date()
-    //     }
-    //   }
-    // )
+// updateMany({currentDate:true},{$set: {curentDate: new Date()})
 
-    const bookingsCollection = client.db("carResale").collection("bookings");
-    const usersCollection = client.db("carResale").collection("users");
-
-    const productCollection = client.db("carResale").collection("product");
-
+    const bookingsCollection = client.db("resaleCar").collection("bookings");
+    const usersCollection = client.db("resaleCar").collection("users");
+    const productCollection = client.db("resaleCar").collection("product");
     console.log('db connected');
     app.get('/allCars', async (req, res) => {
       const query = {};
@@ -217,7 +206,7 @@ res.send(result)
 run().catch((err) => console.log(err));
 
 app.get("/", (req, res) => {
-  res.send("car factory server is running");
+  res.send("Car Factory Server is Running");
 });
 
 app.listen(port, () => {
